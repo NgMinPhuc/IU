@@ -8,7 +8,9 @@ namespace VideoGameCharacterApi.Services.Implement;
 public class GameService(AppDbContext context, ILogger<GameService> logger) : IGameService
 {
     public async Task<List<GameResponse>> GetAllGamesAsync()
-        => await context.Games
+    {
+        logger.LogInformation("GAME SERVICE: Starting to retrieve all games");
+        var games = await context.Games
             .Include(g => g.Characters)
             .Select(g => new GameResponse
             {
@@ -27,11 +29,16 @@ public class GameService(AppDbContext context, ILogger<GameService> logger) : IG
                     Blood = c.Blood,
                     GameId = c.GameId
                 }).ToList()
-            })
-            .ToListAsync();
+            }).ToListAsync();
+
+        logger.LogInformation("GAME SERVICE: Finished retrieving all games.");
+        return games;
+    }
 
     public async Task<GameResponse?> GetGameByIdAsync(Guid id)
-        => await context.Games
+    {
+        logger.LogInformation("GAME SERVICE: Starting to retrieve game");
+        var game = await context.Games
             .Include(g => g.Characters)
             .Where(g => g.Id == id)
             .Select(g => new GameResponse
@@ -54,8 +61,13 @@ public class GameService(AppDbContext context, ILogger<GameService> logger) : IG
             })
             .FirstOrDefaultAsync();
 
+        logger.LogInformation("GAME SERVICE: Finished retrieving game");
+        return game;
+    }
+
     public async Task<GameResponse> AddGameAsync(CreateGameRequest game)
     {
+        logger.LogInformation("GAME SERVICE: Starting to add new game");
         var newGame = new Game
         {
             Name = game.Name,
@@ -68,6 +80,7 @@ public class GameService(AppDbContext context, ILogger<GameService> logger) : IG
         context.Games.Add(newGame);
         await context.SaveChangesAsync();
 
+        logger.LogInformation("GAME SERVICE: Finished adding new game");
         return new GameResponse
         {
             Id = newGame.Id,
@@ -81,6 +94,7 @@ public class GameService(AppDbContext context, ILogger<GameService> logger) : IG
 
     public async Task<GameResponse?> UpdateGameAsync(Guid id, UpdateGameRequest game)
     {
+        logger.LogInformation("GAME SERVICE: Starting to update game");
         var existing = await context.Games.FindAsync(id);
         if (existing is null)
             return null;
@@ -93,6 +107,7 @@ public class GameService(AppDbContext context, ILogger<GameService> logger) : IG
 
         await context.SaveChangesAsync();
 
+        logger.LogInformation("GAME SERVICE: Finished updating game");
         return new GameResponse
         {
             Id = existing.Id,
@@ -106,6 +121,7 @@ public class GameService(AppDbContext context, ILogger<GameService> logger) : IG
 
     public async Task<bool> DeleteGameAsync(Guid id)
     {
+        logger.LogInformation("GAME SERVICE: Starting to delete game with ID {GameId}", id);
         var game = await context.Games
             .Include(g => g.Characters)
             .FirstOrDefaultAsync(g => g.Id == id);
@@ -119,40 +135,33 @@ public class GameService(AppDbContext context, ILogger<GameService> logger) : IG
         context.Games.Remove(game);
         await context.SaveChangesAsync();
 
+        logger.LogInformation("GAME SERVICE: Finished deleting game");
         return true;
     }
 
     public async Task<GameResponse?> AddGameCharacterAsync(Guid gameId, Guid characterId)
     {
-        logger.LogInformation("Adding character {CharacterId} to game {GameId}", characterId, gameId);
-
-        logger.LogDebug("Fetching game with ID {GameId} from database", gameId);
+        logger.LogInformation("GAME SERVICE: Starting to add character to game");
         var game = await context.Games
             .Include(g => g.Characters)
             .FirstOrDefaultAsync(g => g.Id == gameId);
 
-
-        logger.LogDebug("Game fetched: {Game}", game is null ? "null" : $"ID={game.Id}, Name={game.Name}");
         if (game is null)
             return null;
 
-        logger.LogDebug("Fetching character with ID {CharacterId} from database", characterId);
         var character = await context.Characters.FindAsync(characterId);
         if (character is null)
             throw new KeyNotFoundException("Character not found.");
 
-        logger.LogDebug("Character fetched: {Character}", $"ID={character.Id}, Name={character.Name}, GameId={character.GameId}");
         if (character.GameId == gameId)
             throw new InvalidOperationException("Character is already assigned to this game.");
 
-        logger.LogDebug("Assigning character {CharacterId} to game {GameId}", characterId, gameId);
         character.GameId = gameId;
         await context.SaveChangesAsync();
 
-        logger.LogDebug("Reloading game characters collection for game {GameId}", gameId);
         await context.Entry(game).Collection(g => g.Characters).LoadAsync();
 
-        logger.LogDebug("Returning updated game response for game {GameId}", gameId);
+        logger.LogInformation("GAME SERVICE: Finished adding character to game");
         return new GameResponse
         {
             Id = game.Id,
@@ -175,6 +184,7 @@ public class GameService(AppDbContext context, ILogger<GameService> logger) : IG
 
     public async Task<bool> RemoveGameCharacterAsync(Guid gameId, Guid characterId)
     {
+        logger.LogInformation("GAME SERVICE: Starting to remove character from game");
         var game = await context.Games.FindAsync(gameId);
         if (game is null)
             return false;
@@ -186,6 +196,7 @@ public class GameService(AppDbContext context, ILogger<GameService> logger) : IG
         character.GameId = null;
         await context.SaveChangesAsync();
 
+        logger.LogInformation("GAME SERVICE: Finished removing character from game");
         return true;
     }
 }

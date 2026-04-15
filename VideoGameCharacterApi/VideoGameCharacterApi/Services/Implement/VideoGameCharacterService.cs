@@ -5,10 +5,11 @@ using VideoGameCharacterApi.Models;
 
 namespace VideoGameCharacterApi.Services.Implement;
 
-public class VideoGameCharacterService(AppDbContext context) : IVideoGameCharacterService
+public class VideoGameCharacterService(AppDbContext context, ILogger<VideoGameCharacterService> logger) : IVideoGameCharacterService
 {
     public async Task<CharacterResponse> AddCharacterAsync(CreateCharacterRequest character)
     {
+        logger.LogInformation("VIDEO GAME CHARACTER SERVICE: Starting to add character");
         var newCharacter = new Character
         {
             Name = character.Name,
@@ -20,6 +21,7 @@ public class VideoGameCharacterService(AppDbContext context) : IVideoGameCharact
         context.Characters.Add(newCharacter);
         await context.SaveChangesAsync();
 
+        logger.LogInformation("VIDEO GAME CHARACTER SERVICE: Finished adding character");
         return new CharacterResponse
         {
             Id = newCharacter.Id,
@@ -32,6 +34,7 @@ public class VideoGameCharacterService(AppDbContext context) : IVideoGameCharact
 
     public async Task<bool> DeleteCharacterAsync(Guid id)
     {
+        logger.LogInformation("VIDEO GAME CHARACTER SERVICE: Starting to delete character" );
         var character = await context.Characters.FindAsync(id);
         if (character is null)
             return false;
@@ -39,6 +42,7 @@ public class VideoGameCharacterService(AppDbContext context) : IVideoGameCharact
         context.Characters.Remove(character);
         await context.SaveChangesAsync();
 
+        logger.LogInformation("VIDEO GAME CHARACTER SERVICE: Finished deleting character");
         return true;
     }
 

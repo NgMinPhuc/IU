@@ -7,15 +7,19 @@ namespace VideoGameCharacterApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class GamesController(IGameService service) : ControllerBase
+public class GamesController(IGameService service, ILogger<GamesController> logger) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<ApiResponse<List<GameResponse>>>> GetGames()
-        => Ok(ApiResponse<List<GameResponse>>.Ok(await service.GetAllGamesAsync()));
+    {
+        logger.LogInformation("GAMES CONTROLLER: Starting to retrieve all games");
+        return Ok(ApiResponse<List<GameResponse>>.Ok(await service.GetAllGamesAsync()));
+    }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<ApiResponse<GameResponse>>> GetGame(Guid id)
     {
+        logger.LogInformation("GAMES CONTROLLER: Retrieving game with ID {GameId}", id);
         var game = await service.GetGameByIdAsync(id);
         return game is null
             ? NotFound(ApiResponse<GameResponse>.Fail("Game with the given Id was not found."))
@@ -25,6 +29,7 @@ public class GamesController(IGameService service) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ApiResponse<GameResponse>>> AddGame(CreateGameRequest game)
     {
+        logger.LogInformation("GAMES CONTROLLER: Adding new game with name {GameName}", game.Name);
         var created = await service.AddGameAsync(game);
         return CreatedAtAction(nameof(GetGame), new { id = created.Id },
             ApiResponse<GameResponse>.Ok(created, "Game created successfully."));
@@ -33,6 +38,7 @@ public class GamesController(IGameService service) : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<ApiResponse<GameResponse>>> UpdateGame(Guid id, UpdateGameRequest game)
     {
+        logger.LogInformation("GAMES CONTROLLER: Updating game with ID {GameId}", id);
         var updated = await service.UpdateGameAsync(id, game);
         return updated is null
             ? NotFound(ApiResponse<GameResponse>.Fail("Game with the given Id was not found."))
@@ -42,6 +48,7 @@ public class GamesController(IGameService service) : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<ApiResponse<object?>>> DeleteGame(Guid id)
     {
+        logger.LogInformation("GAMES CONTROLLER: Deleting game with ID {GameId}", id);
         try
         {
             var deleted = await service.DeleteGameAsync(id);
@@ -58,6 +65,7 @@ public class GamesController(IGameService service) : ControllerBase
     [HttpPost("{gameId}/characters/{characterId}")]
     public async Task<ActionResult<ApiResponse<GameResponse>>> AddGameCharacter(Guid gameId, Guid characterId)
     {
+        logger.LogInformation("GAMES CONTROLLER: Adding character {CharacterId} to game {GameId}", characterId, gameId);
         try
         {
             var result = await service.AddGameCharacterAsync(gameId, characterId);
@@ -78,6 +86,7 @@ public class GamesController(IGameService service) : ControllerBase
     [HttpDelete("{gameId}/characters/{characterId}")]
     public async Task<ActionResult<ApiResponse<object?>>> RemoveGameCharacter(Guid gameId, Guid characterId)
     {
+        logger.LogInformation("GAMES CONTROLLER: Removing character {CharacterId} from game {GameId}", characterId, gameId);
         var removed = await service.RemoveGameCharacterAsync(gameId, characterId);
         return removed
             ? Ok(ApiResponse<object?>.Ok(null, "Character removed from game successfully."))

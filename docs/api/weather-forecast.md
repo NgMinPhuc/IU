@@ -10,7 +10,7 @@ Base path: `/WeatherForecast`
 
 Get a 5-day weather forecast with randomly generated data.
 
-![alt text](<1.png>)
+![alt text](<wf1.png>)
 
 **Request:** No body required.
 

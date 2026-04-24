@@ -1,0 +1,32 @@
+:host {
+  display: flex;
+  height: 100%;
+}
+
+.sidebar {
+  width: 16rem;
+  height: 100%;
+
+  &.collapsed {
+    width: 3.75rem;
+
+    .sidebar-label {
+      opacity: 0;
+      width: 0;
+    }
+  }
+
+  .sidebar-label {
+    opacity: 1;
+    width: auto;
+    transition: opacity 150ms ease, width 150ms ease;
+  }
+}
+
+.nav-item {
+  &.active-item {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    font-weight: 600;
+  }
+}

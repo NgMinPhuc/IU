@@ -1,0 +1,64 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+  <!-- Name -->
+  <div class="flex flex-col gap-1">
+    <label for="name" class="font-semibold">Name <span class="text-red-500">*</span></label>
+    <input pInputText id="name" formControlName="name" placeholder="Enter game name" class="w-full" />
+    @if (submitted && f['name'].errors) {
+      <small class="text-red-500">
+        @if (f['name'].errors['required']) { Name is required. }
+        @else if (f['name'].errors['maxlength']) { Maximum 100 characters. }
+      </small>
+    }
+  </div>
+
+  <!-- Genre -->
+  <div class="flex flex-col gap-1">
+    <label for="genre" class="font-semibold">Genre <span class="text-red-500">*</span></label>
+    <input pInputText id="genre" formControlName="genre" placeholder="e.g. RPG, Action, Sports" class="w-full" />
+    @if (submitted && f['genre'].errors) {
+      <small class="text-red-500">
+        @if (f['genre'].errors['required']) { Genre is required. }
+      </small>
+    }
+  </div>
+
+  <!-- Publisher -->
+  <div class="flex flex-col gap-1">
+    <label for="publisher" class="font-semibold">Publisher <span class="text-red-500">*</span></label>
+    <input pInputText id="publisher" formControlName="publisher" placeholder="Enter publisher name" class="w-full" />
+    @if (submitted && f['publisher'].errors) {
+      <small class="text-red-500">
+        @if (f['publisher'].errors['required']) { Publisher is required. }
+      </small>
+    }
+  </div>
+
+  <!-- Release Date -->
+  <div class="flex flex-col gap-1">
+    <label for="releaseDate" class="font-semibold">Release Date <span class="text-red-500">*</span></label>
+    <p-datepicker id="releaseDate" formControlName="releaseDate" [showIcon]="true" dateFormat="dd/mm/yy" class="w-full" />
+    @if (submitted && f['releaseDate'].errors) {
+      <small class="text-red-500">
+        @if (f['releaseDate'].errors['required']) { Release date is required. }
+      </small>
+    }
+  </div>
+
+  <!-- Price -->
+  <div class="flex flex-col gap-1">
+    <label for="price" class="font-semibold">Price ($) <span class="text-red-500">*</span></label>
+    <p-inputnumber id="price" formControlName="price" [min]="0" [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="0.00" class="w-full" />
+    @if (submitted && f['price'].errors) {
+      <small class="text-red-500">
+        @if (f['price'].errors['required']) { Price is required. }
+        @else if (f['price'].errors['min']) { Price must be at least 0. }
+      </small>
+    }
+  </div>
+
+  <!-- Actions -->
+  <div class="flex justify-end gap-2 pt-2">
+    <p-button label="Cancel" severity="secondary" (onClick)="onCancel()" />
+    <p-button label="{{ isCreate ? 'Create' : 'Update' }}" type="submit" />
+  </div>
+</form>

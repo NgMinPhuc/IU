@@ -1,0 +1,55 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+  <!-- Name -->
+  <div class="flex flex-col gap-1">
+    <label for="name" class="font-semibold">Name <span class="text-red-500">*</span></label>
+    <input pInputText id="name" formControlName="name" placeholder="Enter character name" class="w-full" />
+    @if (submitted && f['name'].errors) {
+      <small class="text-red-500">
+        @if (f['name'].errors['required']) { Name is required. }
+        @else if (f['name'].errors['maxlength']) { Maximum 100 characters. }
+      </small>
+    }
+  </div>
+
+  <!-- Role -->
+  <div class="flex flex-col gap-1">
+    <label for="role" class="font-semibold">Role <span class="text-red-500">*</span></label>
+    <input pInputText id="role" formControlName="role" placeholder="e.g. Warrior, Mage" class="w-full" />
+    @if (submitted && f['role'].errors) {
+      <small class="text-red-500">
+        @if (f['role'].errors['required']) { Role is required. }
+        @else if (f['role'].errors['maxlength']) { Maximum 100 characters. }
+      </small>
+    }
+  </div>
+
+  <!-- Power -->
+  <div class="flex flex-col gap-1">
+    <label for="power" class="font-semibold">Power <span class="text-red-500">*</span></label>
+    <p-inputnumber id="power" formControlName="power" [min]="0" placeholder="0" class="w-full" />
+    @if (submitted && f['power'].errors) {
+      <small class="text-red-500">
+        @if (f['power'].errors['required']) { Power is required. }
+        @else if (f['power'].errors['min']) { Power must be at least 0. }
+      </small>
+    }
+  </div>
+
+  <!-- Blood -->
+  <div class="flex flex-col gap-1">
+    <label for="blood" class="font-semibold">Blood <span class="text-red-500">*</span></label>
+    <p-inputnumber id="blood" formControlName="blood" [min]="0" placeholder="0" class="w-full" />
+    @if (submitted && f['blood'].errors) {
+      <small class="text-red-500">
+        @if (f['blood'].errors['required']) { Blood is required. }
+        @else if (f['blood'].errors['min']) { Blood must be at least 0. }
+      </small>
+    }
+  </div>
+
+  <!-- Actions -->
+  <div class="flex justify-end gap-2 pt-2">
+    <p-button label="Cancel" severity="secondary" (onClick)="onCancel()" />
+    <p-button label="{{ isCreate ? 'Create' : 'Update' }}" type="submit" />
+  </div>
+</form>

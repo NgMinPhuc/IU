@@ -1,0 +1,52 @@
+<div class="flex h-screen overflow-hidden bg-gray-50">
+
+  <!-- Sidebar -->
+  <app-sidebar [collapsed]="sidebarCollapsed()" />
+
+  <!-- Right side -->
+  <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 shadow-sm flex items-center justify-between h-14 px-4 shrink-0">
+      <!-- Left: toggle + title -->
+      <div class="flex items-center gap-3">
+        <button
+          (click)="toggleSidebar()"
+          class="p-2 rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
+          [title]="sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+        >
+          <i class="pi pi-bars text-lg"></i>
+        </button>
+        <span class="text-sm font-semibold text-gray-700">Video Game Manager</span>
+      </div>
+
+      <!-- Right: actions -->
+      <div class="flex items-center gap-2">
+        <button class="p-2 rounded-md text-gray-500 hover:bg-gray-100 transition-colors" title="Notifications">
+          <i class="pi pi-bell text-lg"></i>
+        </button>
+        <button class="p-2 rounded-md text-gray-500 hover:bg-gray-100 transition-colors" title="Help">
+          <i class="pi pi-question-circle text-lg"></i>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center ml-1">
+          <i class="pi pi-user text-sm text-blue-600"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="flex-1 overflow-auto py-6 px-6">
+      <router-outlet />
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 shrink-0 px-6 py-3 flex items-center justify-between">
+      <span class="text-xs text-gray-400">&copy; 2025 Video Game Manager. All rights reserved.</span>
+      <span class="text-xs text-gray-300">v1.0.0</span>
+    </footer>
+
+  </div>
+</div>
+
+<!-- Global Toast -->
+<p-toast position="top-right" />

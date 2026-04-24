@@ -8,6 +8,5 @@ public class Game
     public string Publisher { get; set; } = string.Empty;
     public DateTime ReleaseDate { get; set; }
     public decimal Price { get; set; }
-
     public List<Character> Characters { get; set; } = new();
 }

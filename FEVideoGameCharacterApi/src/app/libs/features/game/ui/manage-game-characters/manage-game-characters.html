@@ -1,0 +1,82 @@
+<div class="flex flex-col gap-5">
+
+  <!-- Add character row -->
+  <div class="flex flex-col gap-2">
+    <label class="font-semibold">Add Character</label>
+    <div class="flex gap-2">
+      <p-select
+        [options]="availableCharacters"
+        [(ngModel)]="selectedCharacterId"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Select a character..."
+        [filter]="true"
+        filterBy="name"
+        class="flex-1"
+        styleClass="w-full"
+        [disabled]="loading"
+      />
+      <p-button
+        label="Add"
+        icon="pi pi-plus"
+        (onClick)="onAdd()"
+        [disabled]="!selectedCharacterId || loading"
+      />
+    </div>
+    @if (availableCharacters.length === 0) {
+      <small class="text-gray-400 italic">All characters are already assigned to this game.</small>
+    }
+  </div>
+
+  <!-- Current characters table -->
+  <div>
+    <p class="font-semibold mb-2">Characters in this game <span class="text-gray-400 font-normal">({{ game.characters.length }})</span></p>
+    <p-table
+      [value]="game.characters"
+      styleClass="p-datatable-sm p-datatable-gridlines"
+      [tableStyle]="{ 'min-width': '28rem' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Power</th>
+          <th>Blood</th>
+          <th class="text-center">Remove</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td class="font-medium">{{ item.name }}</td>
+          <td><p-tag [value]="item.role" severity="info" /></td>
+          <td>{{ item.power }}</td>
+          <td>{{ item.blood }}</td>
+          <td class="text-center">
+            <p-button
+              icon="pi pi-times"
+              severity="danger"
+              size="small"
+              [rounded]="true"
+              [disabled]="loading"
+              (onClick)="onRemove(item)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center py-6 text-gray-400">
+            <i class="pi pi-users text-3xl block mb-1"></i>
+            No characters assigned yet.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Footer -->
+  <div class="flex justify-end pt-1">
+    <p-button label="Done" severity="secondary" (onClick)="onClose()" />
+  </div>
+
+</div>

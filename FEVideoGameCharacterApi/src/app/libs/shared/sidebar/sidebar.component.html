@@ -1,0 +1,38 @@
+<aside
+  class="sidebar bg-white border-r border-gray-200 shadow-sm flex flex-col transition-all duration-200 overflow-hidden"
+  [class.collapsed]="collapsed()"
+>
+  <!-- Brand -->
+  <div class="flex items-center gap-3 h-14 px-4 border-b border-gray-100 shrink-0">
+    <i class="pi pi-gamepad text-xl text-blue-600 shrink-0"></i>
+    <span class="sidebar-label text-sm font-bold text-gray-800 whitespace-nowrap">Video Game Manager</span>
+  </div>
+
+  <!-- Nav -->
+  <nav class="flex flex-col gap-1 p-3 flex-1 overflow-y-auto">
+    @for (item of navItems; track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="active-item"
+        class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium"
+        [title]="collapsed() ? item.label : ''"
+      >
+        <i class="pi {{ item.icon }} shrink-0 text-base"></i>
+        <span class="sidebar-label whitespace-nowrap overflow-hidden">{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <!-- Sidebar footer -->
+  <div class="border-t border-gray-100 p-3 shrink-0">
+    <div class="flex items-center gap-3 px-3 py-2">
+      <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+        <i class="pi pi-user text-sm text-blue-600"></i>
+      </div>
+      <div class="sidebar-label overflow-hidden">
+        <p class="text-sm font-medium text-gray-800 whitespace-nowrap">Admin User</p>
+        <p class="text-xs text-gray-400 whitespace-nowrap">admin&#64;vgm.com</p>
+      </div>
+    </div>
+  </div>
+</aside>
